@@ -5,23 +5,16 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/gmanninglive/scrapi/pkg/models"
 	"github.com/gocolly/colly/v2"
 )
 
-type Review struct {
-	Author   string
-	Url      string
-	Stars    int
-	Message  string
-	Verified bool
-}
-
 const URL = "https://www.reviews.co.uk/company-reviews/store/yardlynk"
 
-func RefreshReviews()[]Review {
+func RefreshReviews()[]models.Review {
 	c := colly.NewCollector()
 
-	var data []Review
+	var data []models.Review
 
 	c.OnHTML("div.Review", func(e *colly.HTMLElement) {
 		author := e.DOM.Find(".Review__author")
@@ -30,7 +23,7 @@ func RefreshReviews()[]Review {
 		message := e.DOM.Find(".Review__body")
 		verified := e.DOM.Find("div.BadgeElement__text:contains('Verified Buyer')")
 
-		review := Review{
+		review := models.Review{
 			Author:   strings.TrimSpace(author.Text()),
 			Stars:    stars,
 			Url:      fmt.Sprintf("%s%s", URL, reviewPath),
