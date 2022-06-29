@@ -1,4 +1,4 @@
-package main
+package scraper
 
 import (
 	"fmt"
@@ -11,10 +11,8 @@ import (
 
 const URL = "https://www.reviews.co.uk/company-reviews/store/yardlynk"
 
-func RefreshReviews()[]models.Review {
+func RefreshReviews(res chan models.Review, done chan bool) {
 	c := colly.NewCollector()
-
-	var data []models.Review
 
 	c.OnHTML("div.Review", func(e *colly.HTMLElement) {
 		author := e.DOM.Find(".Review__author")
@@ -31,13 +29,15 @@ func RefreshReviews()[]models.Review {
 			Verified: verified.Text() != "",
 		}
 
-		data = append(data, review)
+		res <- review
 	})
 
 	c.OnHTML("a[href]", func(e *colly.HTMLElement) {
 		prefix := "https://www.reviews.co.uk/company-reviews/store/yardlynk/"
 		href := e.Attr("href")
-		if(!strings.HasPrefix(href, prefix)){ return }
+		if !strings.HasPrefix(href, prefix) {
+			return
+		}
 
 		if _, err := strconv.Atoi(href[len(prefix):]); err == nil {
 			e.Request.Visit(href)
@@ -50,5 +50,5 @@ func RefreshReviews()[]models.Review {
 
 	c.Visit("https://www.reviews.co.uk/company-reviews/store/yardlynk")
 
-	return data
+	done <- true
 }
