@@ -2,6 +2,7 @@ package db
 
 import (
 	"log"
+	"os"
 
 	"github.com/gmanninglive/scrapi/pkg/models"
 	"gorm.io/driver/postgres"
@@ -9,9 +10,8 @@ import (
 )
 
 func Init() *gorm.DB {
-	dbURL := "postgres://pg:pass@localhost:5432/scrapi"
-
-	db, err := gorm.Open(postgres.Open(dbURL), &gorm.Config{})
+	DATABASE_URL := os.Getenv("DATABASE_URL")
+	db, err := gorm.Open(postgres.Open(DATABASE_URL), &gorm.Config{})
 
 	if err != nil {
 		log.Fatalln(err)
