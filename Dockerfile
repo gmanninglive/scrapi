@@ -2,7 +2,6 @@ FROM golang:1.18.1 AS development
 WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
-RUN go mod tidy
 COPY . .
 RUN go install github.com/cespare/reflex@latest
 EXPOSE 4000
@@ -20,5 +19,4 @@ RUN go build -o app
 FROM alpine:latest AS production
 RUN apk add --no-cache ca-certificates
 COPY --from=builder app .
-EXPOSE 4000
 CMD ./app

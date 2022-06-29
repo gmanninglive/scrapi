@@ -12,7 +12,7 @@ import (
 
 
  var API_PREFIX = "/api/v1/"
- var API_SERVER_ADDR = os.Getenv("API_SERVER_ADDR")
+ var PORT = os.Getenv("PORT")
 
 func main() {
 	DB := db.Init()
@@ -20,8 +20,14 @@ func main() {
 	router := mux.NewRouter()
 
 	router.HandleFunc(API_PREFIX + "hello", h.Hello).Methods(http.MethodGet)
+
+	// Fetch and update db with reviews // Currently this appends records to the db. Need to work on replacing duplicates
 	router.HandleFunc(API_PREFIX + "refresh", h.UpdateAll).Methods(http.MethodGet)
 
-	http.ListenAndServe(API_SERVER_ADDR, router)
-	log.Println("Listening on port" + API_SERVER_ADDR)
+	// Get Reviews
+	router.HandleFunc(API_PREFIX + "reviews", h.GetReviews).Methods(http.MethodGet)
+	router.HandleFunc(API_PREFIX + "review/{id}", h.GetReview).Methods(http.MethodGet)
+
+	log.Println("Listening on port" + PORT)
+	http.ListenAndServe(PORT, router)
 }
