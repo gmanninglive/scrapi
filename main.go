@@ -20,7 +20,7 @@ func main() {
 	router := mux.NewRouter()
 
 	router.HandleFunc(API_PREFIX + "hello", h.Hello).Methods(http.MethodGet)
-
+	router.HandleFunc(API_PREFIX + "refresh", h.UpdateAll).Methods(http.MethodGet)
 
 	http.ListenAndServe(API_SERVER_ADDR, router)
 	log.Println("Listening on port" + API_SERVER_ADDR)

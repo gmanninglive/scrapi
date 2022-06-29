@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/gocolly/colly/v2 v2.1.0
+	github.com/gorilla/mux v1.8.0
 	gorm.io/driver/postgres v1.3.7
 	gorm.io/gorm v1.23.6
 )
