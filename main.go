@@ -1,11 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
-	"strings"
 
 	"github.com/gmanninglive/scrapi/pkg/db"
 	"github.com/gmanninglive/scrapi/pkg/handlers"
@@ -14,13 +12,9 @@ import (
 
 
  var API_PREFIX = "/api/v1/"
- var PORT = os.Getenv("PORT")
+ var __ADDR = ":" + os.Getenv("PORT")
 
 func main() {
-	if !strings.HasPrefix(PORT, ":"){
-		PORT = fmt.Sprintf(":%s", PORT)
-	}
-	
 	DB := db.Init()
 	h := handlers.New(DB)
 	router := mux.NewRouter()
@@ -34,6 +28,6 @@ func main() {
 	router.HandleFunc(API_PREFIX + "reviews", h.GetReviews).Methods(http.MethodGet)
 	router.HandleFunc(API_PREFIX + "review/{id}", h.GetReview).Methods(http.MethodGet)
 
-	log.Println("Listening on port" + PORT)
-	http.ListenAndServe(PORT, router)
+	log.Printf("Listening on port %s!\n" + os.Getenv("PORT"))
+	http.ListenAndServe(__ADDR, router)
 }
