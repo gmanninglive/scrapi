@@ -28,6 +28,6 @@ func main() {
 	router.HandleFunc(API_PREFIX + "reviews", h.GetReviews).Methods(http.MethodGet)
 	router.HandleFunc(API_PREFIX + "review/{id}", h.GetReview).Methods(http.MethodGet)
 
-	log.Printf("Listening on port %s!\n" + os.Getenv("PORT"))
+	log.Printf("Listening on port %s!\n", os.Getenv("PORT"))
 	http.ListenAndServe(__ADDR, router)
 }

@@ -11,11 +11,12 @@ import (
 func (h handler) UpdateAll(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 
-	reviewChan := make(chan models.Review)
-	done := make(chan bool)
+	reviewChan, done := make(chan models.Review), make(chan bool)
 
+	// Run scraper concurrently
 	go scraper.RefreshReviews(reviewChan, done)
 
+	// Wait for messages on channels, close when done channel receives message
 	L: for{
 		select {
 		case review := <- reviewChan:
