@@ -17,10 +17,11 @@ func (h handler) UpdateAll(w http.ResponseWriter, r *http.Request) {
 	go scraper.RefreshReviews(reviewChan, done)
 
 	// Wait for messages on channels, close when done channel receives message
-	L: for{
+L:
+	for {
 		select {
-		case review := <- reviewChan:
-			if result :=	h.DB.Create(&review); result.Error != nil {
+		case review := <-reviewChan:
+			if result := h.DB.Create(&review); result.Error != nil {
 				w.WriteHeader(http.StatusExpectationFailed)
 				json.NewEncoder(w).Encode(result.Error)
 			}
@@ -31,8 +32,7 @@ func (h handler) UpdateAll(w http.ResponseWriter, r *http.Request) {
 			break L
 		}
 	}
-	
-	
+
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode("Updated")
 }
