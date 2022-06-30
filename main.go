@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/gmanninglive/scrapi/pkg/db"
 	"github.com/gmanninglive/scrapi/pkg/handlers"
@@ -15,6 +17,10 @@ import (
  var PORT = os.Getenv("PORT")
 
 func main() {
+	if !strings.HasPrefix(PORT, ":"){
+		PORT = fmt.Sprintf(":%s", PORT)
+	}
+	
 	DB := db.Init()
 	h := handlers.New(DB)
 	router := mux.NewRouter()
